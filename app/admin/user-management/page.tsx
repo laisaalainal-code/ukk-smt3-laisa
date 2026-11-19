@@ -107,7 +107,7 @@ export default function UserManagementPage() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>ID</TableHead>
+                            <TableHead>Kode user</TableHead>
                             <TableHead>Nama lengkap</TableHead>
                             <TableHead>Email</TableHead>
                             <TableHead>Role</TableHead>
