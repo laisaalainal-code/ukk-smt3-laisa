@@ -25,13 +25,14 @@ import {
  
 type ManagedUser = {
     id: number
+    kodeUser: string | null
     fullname: string
     email: string
     role: string
     hasToken: boolean
     createdAt: string
 }
- 
+
 const PAGE_SIZE = 10
  
 export default function UserManagementPage() {
@@ -122,7 +123,7 @@ export default function UserManagementPage() {
                             <TableRow><TableCell colSpan={7} className="text-center">Belum ada user.</TableCell></TableRow>
                         ) : users.map((user) => (
                             <TableRow key={user.id}>
-                                <TableCell>{user.id}</TableCell>
+                                <TableCell className="font-medium">{user.kodeUser ?? "-"}</TableCell>
                                 <TableCell className="font-medium">{user.fullname}</TableCell>
                                 <TableCell>{user.email}</TableCell>
                                 <TableCell className="capitalize">{user.role}</TableCell>

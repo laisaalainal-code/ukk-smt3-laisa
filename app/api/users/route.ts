@@ -1,11 +1,13 @@
 
 import { NextResponse } from "next/server"
+import { Prisma } from "@/src/generated/prisma/client"
 import { getAuthenticatedUser } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { createUserJwt, hashUserPassword } from "@/lib/user-security"
 
 const userFields = {
   id: true,
+  kodeUser: true,
   fullname: true,
   email: true,
   role: true,
@@ -17,6 +19,39 @@ const userFields = {
 function isDuplicateEmail(error: unknown) {
   return typeof error === "object" && error !== null && "code" in error && error.code === "P2002"
 }
+
+// =========================================================================
+// PEMBUATAN AUTO NUMBER DI BACKEND (API)
+// Mencari kodeUser terakhir di database, mengambil angkanya, lalu + 1
+// =========================================================================
+async function generateKodeUser(tx: Prisma.TransactionClient, role: string) {
+  let prefix = "STF"
+
+  if (role === "admin") {
+    prefix = "ADM"
+  }
+
+  const lastUser = await tx.user.findFirst({
+    where: {
+      kodeUser: { startsWith: prefix },
+    },
+    orderBy: {
+      kodeUser: "desc",
+    },
+    select: { kodeUser: true },
+  })
+
+  if (!lastUser || !lastUser.kodeUser) {
+    return `${prefix}0000001`
+  }
+
+  const numericPart = lastUser.kodeUser.slice(prefix.length)
+  const lastNumber = Number.parseInt(numericPart, 10)
+  const nextNumber = Number.isNaN(lastNumber) ? 1 : lastNumber + 1
+
+  return `${prefix}${String(nextNumber).padStart(7, "0")}`
+}
+
 
 export async function GET(request: Request) {
   // if (!await getAuthenticatedUser()) {
@@ -94,10 +129,13 @@ export async function POST(request: Request) {
   try {
     const passwordHash = await hashUserPassword(password)
 
-    const user = await prisma.$transaction(async (transaction) => {
-      const created = await transaction.user.create({
-        data: { fullname, email, password: passwordHash, role },
-      })
+      const user = await prisma.$transaction(async (transaction) => {
+  // Kirim transaction DAN role ke dalam fungsi
+  const kodeUser = await generateKodeUser(transaction, role)
+
+  const created = await transaction.user.create({
+    data: { kodeUser, fullname, email, password: passwordHash, role },
+  })
 
       const token = createUserJwt(created)
 
