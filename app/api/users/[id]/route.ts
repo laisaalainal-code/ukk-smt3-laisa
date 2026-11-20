@@ -31,9 +31,9 @@ async function getUserId(context: RouteContext) {
 }
  
 export async function GET(_request: Request, context: RouteContext) {
-  // if (!await getAuthenticatedUser()) {
-  //   return NextResponse.json({ error: "Silakan login untuk melanjutkan." }, { status: 401 })
-  // }
+  if (!await getAuthenticatedUser()) {
+    return NextResponse.json({ error: "Silakan login untuk melanjutkan." }, { status: 401 })
+  }
  
   const userId = await getUserId(context)
   if (!userId) return NextResponse.json({ error: "ID user tidak valid." }, { status: 400 })
@@ -54,9 +54,9 @@ export async function GET(_request: Request, context: RouteContext) {
 }
  
 export async function PATCH(request: Request, context: RouteContext) {
-  // if (!await getAuthenticatedUser()) {
-  //   return NextResponse.json({ error: "Silakan login untuk melanjutkan." }, { status: 401 })
-  // }
+  if (!await getAuthenticatedUser()) {
+    return NextResponse.json({ error: "Silakan login untuk melanjutkan." }, { status: 401 })
+  }
  
   const userId = await getUserId(context)
   if (!userId) return NextResponse.json({ error: "ID user tidak valid." }, { status: 400 })
@@ -121,9 +121,9 @@ export async function PATCH(request: Request, context: RouteContext) {
 }
  
 export async function DELETE(_request: Request, context: RouteContext) {
-  // if (!await getAuthenticatedUser()) {
-  //   return NextResponse.json({ error: "Silakan login untuk melanjutkan." }, { status: 401 })
-  // }
+  if (!await getAuthenticatedUser()) {
+    return NextResponse.json({ error: "Silakan login untuk melanjutkan." }, { status: 401 })
+  }
  
   const userId = await getUserId(context)
   if (!userId) return NextResponse.json({ error: "ID user tidak valid." }, { status: 400 })

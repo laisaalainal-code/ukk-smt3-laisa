@@ -53,9 +53,9 @@ async function generateKodeUser(tx: Prisma.TransactionClient, role: string) {
 
 
 export async function GET(request: Request) {
-  // if (!await getAuthenticatedUser()) {
-  //   return NextResponse.json({ error: "Silakan login untuk melanjutkan." }, { status: 401 })
-  // }
+  if (!await getAuthenticatedUser()) {
+    return NextResponse.json({ error: "Silakan login untuk melanjutkan." }, { status: 401 })
+  }
 
   const searchParams = new URL(request.url).searchParams
   const requestedPage = Number.parseInt(searchParams.get("page") ?? "1", 10)
@@ -92,9 +92,9 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  // if (!await getAuthenticatedUser()) {
-  //   return NextResponse.json({ error: "Silakan login untuk melanjutkan." }, { status: 401 })
-  // }
+  if (!await getAuthenticatedUser()) {
+    return NextResponse.json({ error: "Silakan login untuk melanjutkan." }, { status: 401 })
+  }
 
   let body: Record<string, unknown>
 
